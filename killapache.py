@@ -74,7 +74,8 @@ def main():
     args = parser.parse_args()
 
     if (testapache(args.urls) and not args.dry):
-        killapache(args.urls, args.processes)
+        while True:
+            killapache(args.urls, args.processes)
     
     return 0
 
